@@ -69,8 +69,6 @@
             <ul id="listview" data-role="listview" data-inset="true" data-filter="true">
                 <li data-role="list-divider">products</li>
                 <% products.forEach(function (item, index) { %>
-				<%If(item.count!==0){
-				%>
                 <li class="product" data-index="<%= item.index %>">
                     <a href="#">
                         <img src="graphic.png" />
@@ -80,9 +78,7 @@
                     </a>
                     <a href="#" data-icon="check" data-index="<%= item.index %>"></a>
                 </li>
-                <%
-				}%>
-				<%}); %>
+                <% }); %>
             </ul>
         </div>
     </div>
