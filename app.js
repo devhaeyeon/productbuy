@@ -16,13 +16,13 @@ function Product(name, image, price, count) {
 
 // 변수를 선언합니다.
 var products = [
-    new Product('JavaScript', 'graphic.png', 28000, 30),
-    new Product('jQuery', 'graphic.png', 28000, 30),
-    new Product('Node.js', 'graphic.png', 32000, 30),
-    new Product('Socket.io', 'graphic.png', 17000, 30),
-    new Product('Connect', 'graphic.png', 18000, 30),
-    new Product('Express', 'graphic.png', 31000, 30),
-    new Product('EJS', 'graphic.png', 12000, 30)
+    new Product('JavaScript', 'graphic.png', 28000, 5),
+    new Product('jQuery', 'graphic.png', 28000, 4),
+    new Product('Node.js', 'graphic.png', 32000, 10),
+    new Product('Socket.io', 'graphic.png', 17000, 4),
+    new Product('Connect', 'graphic.png', 18000, 5),
+    new Product('Express', 'graphic.png', 31000, 6),
+    new Product('EJS', 'graphic.png', 12000, 10)
 ];
 
 // 웹 서버를 생성합니다.
