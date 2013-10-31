@@ -1,107 +1,86 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<style>
-        .line { overflow:hidden; }
-        .seat {
-            margin:2px; float:left;
-            width:30px; height:30px;
-            background:Red;
-            border-radius:3px;
-        }
-        .enable { background: Gray; }
-        .enable:hover { background: Black; }
-        .resSeat{background: skyblue;}
-		.disable { background: Red; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
     <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
+    <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <!-- 소켓 생성 -->
-    <script>
-        // 소켓 이벤트를 수행합니다.
-        var socket = io.connect('http://reservationmovie.herokuapp.com/');
-        // 이벤트를 연결합니다.
-        socket.on('reserve', function (data) {
-            var $target = $('div[data-x=' + data.x + '][data-y=' + data.y + ']');
-            $target.removeClass('enable');
-            $target.addClass('resSeat');
-        });
-		 socket.on('reserve_cancle', function (data) {
-            var $target = $('div[data-x=' + data.x + '][data-y=' + data.y + ']');
-            $target.removeClass('resSeat');
-            $target.addClass('enable');
-        });
-    </script>
-    <!-- 초기 좌석 생성 -->
     <script>
         $(document).ready(function () {
-            // 예약 이벤트
-            var onClickSeat = function () {
-                var x = $(this).attr('data-x');
-                var y = $(this).attr('data-y');
-
-                if (confirm('좌석을 예약하시겠습니까?')) {
-                    $(this).off('click');
-                    socket.emit('reserve', {
-                        x: x,
-                        y: y
-                    });
-                } else {
-                    alert('취소되었습니다.');
-                }
+            // 함수를 선언합니다.
+            function changeIcon(parent, from, to) {
+                var target = $('.ui-btn-text', parent).next();
+                target.removeClass(from).addClass(to);
             };
-		//예약 취소 이벤트
-            var onClickSeatCancle = function () {
-                var x = $(this).attr('data-x');
-                var y = $(this).attr('data-y');
 
-                if (confirm('좌석을 예약 취소하시겠습니까?')) {
-                    $(this).off('click');
-                    socket.emit('reserve_cancle', {
-                        x: x,
-                        y: y
-                    });
+            function changeCount(index, count) {
+                $('li[data-index=' + index + '] .ui-li-count').html(count);
+            }
+
+            // 소켓을 생성합니다.
+            var socket = io.connect();
+
+            // 소켓 이벤트를 연결합니다.
+            socket.on('count', function (data) {
+                // 물건 개수를 변경합니다.
+                changeCount(data.index, data.count);
+            });
+
+            // 문서 객체 이벤트를 연결합니다.
+            $('.product > a[data-icon]').toggle(function () {
+                // 변수를 선언합니다.
+                var index = $(this).attr('data-index');
+
+                // 소켓 이벤트를 발생시킵니다.
+                socket.emit('cart', Number(index));
+
+                // 아이콘 및 테마 변환
+                changeIcon(this, 'ui-icon-check', 'ui-icon-back');
+            }, function () {
+                // 변수를 선언합니다.
+                var index = $(this).attr('data-index');
+
+                // 구매 의사를 물어봅니다.
+                if (confirm('물건을 구매하겠습니까?')) {
+                    // 소켓 이벤트를 발생시킵니다.
+                    socket.emit('buy', Number(index));
+
+                    // 리스트 아이템을 제거합니다.
+                    $(this).parent().remove();
+                    $('#listview').listview('refresh');
                 } else {
-                    alert('취소되었습니다.');
+                    // 소켓 이벤트를 발생시킵니다.
+                    socket.emit('return', Number(index));
+
+                    // 아이콘 및 테마 변환
+                    changeIcon(this, 'ui-icon-back', 'ui-icon-check');
                 }
-            };
-            // Ajax를 수행합니다.
-            $.getJSON('/seats', { dummy: new Date().getTime() }, function (data) {
-                // 좌석을 생성합니다.
-                $.each(data, function (indexY, line) {
-                    // 문서 객체를 생성합니다.
-                    var $line = $('<div></div>').addClass('line');
-                    $.each(line, function (indexX, seat) {
-                        // 문서 객체를 생성하고 변수 $line에 추가합니다.
-                        var $output = $('<div></div>', {
-                            'class': 'seat',
-                            'data-x': indexX,
-                            'data-y': indexY
-                        }).appendTo($line);
-                        if (seat == 1) {
-                            // 좌석이 비어있으면 enable 클래스와 click 리스너를 추가합니다.
-                            $output.addClass('enable').on('click', onClickSeat);
-                        } 
-						else if(seat==2)
-						{
-							// 좌석이 예약되어있으면 enable 클래스와 click 리스너를 추가합니다.
-                            $output.addClass('resSeat').on('click', onClickSeatCancle);
-						}
-						else {
-                            // 좌석이 사용 불가능하면 disable 클래스를 추가합니다.
-                            $output.addClass('disable');
-                        }
-                    });
-                    // 문서 객체를 추가합니다.
-                    $line.appendTo('body');
-                });
             });
         });
     </script>
 </head>
 <body>
-<h1>좌석 예매 시스템</h1>
-<a href="/">예약 취소</a> <a href="/">예약</a>
+    <div data-role="page">
+        <div data-role="header">
+            <h1>Store</h1>
+        </div>
+        <div data-role="content">
+            <ul id="listview" data-role="listview" data-inset="true" data-filter="true">
+                <li data-role="list-divider">products</li>
+                <% products.forEach(function (item, index) { %>
+                <li class="product" data-index="<%= item.index %>">
+                    <a href="#">
+                        <img src="chrome.png" />
+                        <h3><%= item.name %></h3>
+                        <p><%= item.price %>원</p>
+                        <span class="ui-li-count"><%= item.count %></span>
+                    </a>
+                    <a href="#" data-icon="check" data-index="<%= item.index %>"></a>
+                </li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
 </body>
 </html>
