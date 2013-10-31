@@ -19,7 +19,7 @@
             }
 
             // 소켓을 생성합니다.
-            var socket = io.connect();
+            var socket = io.connect('http://productbuy.herokuapp.com/');
 
             // 소켓 이벤트를 연결합니다.
             socket.on('count', function (data) {
