@@ -8,7 +8,18 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         $(document).ready(function () {
-            // 함수를 선언합니다.
+                var index = $(this).attr('data-index');
+				
+				// 수량이 0일 경우 스타일 적용하기
+				var countNum=$('#countNum'+index);
+				var countValue=$(countNum).text();
+				countValue=Number(countValue);
+				if(countValue===0)
+				{
+					countNum.css('color','red');
+				}
+			
+			// 함수를 선언합니다.
             function changeIcon(parent, from, to) {
                 var target = $('.ui-btn-text', parent).next();
                 target.removeClass(from).addClass(to);
@@ -40,25 +51,34 @@
             }, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
+				
+				// 수량 값 가져오기
 				var countNum=$('#countNum'+index);
 				var countValue=$(countNum).text();
-				console.log(countValue);
-                // 구매 의사를 물어봅니다.
-                if (confirm('물건을 구매하겠습니까?')) {
-                    // 소켓 이벤트를 발생시킵니다.
-                    socket.emit('buy', Number(index));
+				countValue=Number(countValue);
+				if(countValue!==0)
+				{
+					// 구매 의사를 물어봅니다.
+					if (confirm('물건을 구매하겠습니까?')) {
+						// 소켓 이벤트를 발생시킵니다.
+						socket.emit('buy', Number(index));
 
-                    // 리스트 아이템을 제거합니다.
-                    $(this).parent().remove();
-                    $('#listview').listview('refresh');
-                } else {
-                    // 소켓 이벤트를 발생시킵니다.
-                    socket.emit('return', Number(index));
+						// 리스트 아이템을 제거합니다.
+						$(this).parent().remove();
+						$('#listview').listview('refresh');
+					} else {
+						// 소켓 이벤트를 발생시킵니다.
+						socket.emit('return', Number(index));
 
-                    // 아이콘 및 테마 변환
-                    changeIcon(this, 'ui-icon-back', 'ui-icon-check');
-                }
-            });
+						// 아이콘 및 테마 변환
+						changeIcon(this, 'ui-icon-back', 'ui-icon-check');
+					}
+				}
+				else
+				{
+
+				}
+			});
         });
     </script>
 </head>
