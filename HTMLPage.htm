@@ -13,14 +13,18 @@
 				$( ".product" ).each(function( index ) {
 					// 수량이 0일 경우 스타일 적용하기
 					var productIdx=$('#productIdx'+index+' h3');
+					var costIdx=$('#productIdx'+index+' p');
 					var countNum=$('#countNum'+index);
 					
 					var countValue=$(countNum).text();
 					countValue=Number(countValue);
 					if(countValue===0)
 					{
-						console.log(productIdx.text());
+						productIdx.text();
 						productIdx.css('color','red');
+						costIdx.css('color','red');
+						countNum.css('color','red');
+
 					}
 				});
 			
