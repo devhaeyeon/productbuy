@@ -16,8 +16,8 @@ function Product(name, image, price, count) {
 
 // 변수를 선언합니다.
 var products = [
-    new Product('JavaScript', 'graphic.png', 28000, 1),
-    new Product('jQuery', 'graphic.png', 28000, 0),
+    new Product('JavaScript', 'graphic.png', 28000, 10),
+    new Product('jQuery', 'graphic.png', 28000, 20),
     new Product('Node.js', 'graphic.png', 32000, 10),
     new Product('Socket.io', 'graphic.png', 17000, 15),
     new Product('Connect', 'graphic.png', 18000, 15),
@@ -72,22 +72,29 @@ io.sockets.on('connection', function (socket) {
     var cart = {};
 
     // cart 이벤트 
-    socket.on('cart', function (index) {
-        // 물건 개수를 감소시킵니다.
+     socket.on('cart', function (index) {
+         // 물건 개수를 감소시킵니다.
         products[index].count--;
+		if(products[index].count >= 0)
+		{
+ 			products[index].count--;
+ 			// 카트에 물건을 넣고 타이머를 시작합니다.
+ 			cart[index] = {};
+ 				index: index,
+ 				count: products[index].count
+ 			});
+		}
+       else
+		{
+				products[index].count=0;
+				// count 이벤트를 발생시킵니다.
+				io.sockets.emit('count', {
+					index: index,
+					count: products[index].count
+			});
+	}
+		
 
-        // 카트에 물건을 넣고 타이머를 시작합니다.
-        cart[index] = {};
-        cart[index].index = index;
-        cart[index].timerID = setTimeout(function () {
-            onReturn(index);
-        }, 1000 * 60 * 10);
-
-        // count 이벤트를 발생시킵니다.
-        io.sockets.emit('count', {
-            index: index,
-            count: products[index].count
-        });
     });
 
     // buy 이벤트
