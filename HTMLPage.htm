@@ -40,7 +40,8 @@
             }, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				console.log(index);
+				var countValue=index.text();
+				console.log(countValue);
                 // 구매 의사를 물어봅니다.
                 if (confirm('물건을 구매하겠습니까?')) {
                     // 소켓 이벤트를 발생시킵니다.
