@@ -20,7 +20,8 @@
 					countValue=Number(countValue);
 					if(countValue===0)
 					{
-						productIdx.text();
+						var procName=productIdx.text();
+						procName="품절"+procName;
 						productIdx.css('color','red');
 						costIdx.css('color','red');
 						countNum.css('color','red');
