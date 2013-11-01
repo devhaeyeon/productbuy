@@ -1,135 +1,118 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-.noProduct
-{
-	color:red;
+// 모듈을 추출합니다.
+var connect = require('connect');
+var fs = require('fs');
+var ejs = require('ejs');
+ var port = process.env.PORT || 5000;
+
+// 생성자 함수를 선언합니다.
+var counter = 0;
+function Product(name, image, price, count) {
+    this.index = counter++;
+    this.name = name;
+    this.image = image;
+    this.price = price;
+    this.count = count;
 }
 
-</style>
-    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
-    <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
-    <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        $(document).ready(function () {
-               //each 돌려서 count 0인 곳 찾아서 스타일 적용. 태그 사이의 값에 텍스트 추가.
-				
-				$( ".product" ).each(function( index ) {
-					// 수량이 0일 경우 스타일 적용하기
-					var productIdx=$('#productIdx'+index+' h3');
-					var costIdx=$('#productIdx'+index+' p');
-					var countNum=$('#countNum'+index);
-					
-					var countValue=$(countNum).text();
-					countValue=Number(countValue);
-					if(countValue===0)
-					{
-						productIdx.before('<span class=noProduct>품절</span>');
-						productIdx.css('color','red');
-						costIdx.css('color','red');
-						countNum.css('color','red');
+// 변수를 선언합니다.
+var products = [
+    new Product('JavaScript', 'graphic.png', 28000, 1),
+    new Product('jQuery', 'graphic.png', 28000, 0),
+    new Product('Node.js', 'graphic.png', 32000, 10),
+    new Product('Socket.io', 'graphic.png', 17000, 15),
+    new Product('Connect', 'graphic.png', 18000, 15),
+    new Product('Express', 'graphic.png', 31000, 26),
+    new Product('EJS', 'graphic.png', 12000, 10)
+];
 
-						productIdx.css('text-decoration','line-through');
-						costIdx.css('text-decoration','line-through');
-						countNum.css('text-decoration','line-through');
+// 웹 서버를 생성합니다.
+var server = connect.createServer();
+server.use(connect.static(__dirname + '/Resources'));
+server.use(connect.router(function (app) {
+    // HTMLPage.htm 파일을 읽습니다.
+    var HTMLPage = fs.readFileSync('HTMLPage.htm', 'utf8');
 
-					}
-				});
-			
-			// 함수를 선언합니다.
-            function changeIcon(parent, from, to) {
-                var target = $('.ui-btn-text', parent).next();
-                target.removeClass(from).addClass(to);
-            };
+    // GET - /
+    app.get('/', function (request, response) {
+        // 응답합니다.
+        response.writeHead(200, { 'Content-Type': 'text/html' });
+        response.end(ejs.render(HTMLPage, {
+            products: products
+        }));
+    });
+}));
 
-            function changeCount(index, count) {
-                $('li[data-index=' + index + '] .ui-li-count').html(count);
-            }
+// 웹 서버를 실행합니다.
+server.listen(port, function () {
+    console.log('Server Running at http://127.0.0.1:52273');
+});
 
-            // 소켓을 생성합니다.
-            var socket = io.connect('http://productbuy.herokuapp.com/');
+// 소켓 서버를 생성 및 실행합니다.
+var io = require('socket.io').listen(server);
+io.sockets.on('connection', function (socket) {
+    // 함수를 선언합니다.
+    function onReturn(index) {
+        // 물건 개수를 증가시킵니다.
+        products[index].count++;
 
-            // 소켓 이벤트를 연결합니다.
-            socket.on('count', function (data) {
-                // 물건 개수를 변경합니다.
-                changeCount(data.index, data.count);
-            });
+        // 타이머를 제거합니다.
+        clearTimeout(cart[index].timerID);
 
-            // 문서 객체 이벤트를 연결합니다.
-            $('.product > a[data-icon]').toggle(function () {
-                // 변수를 선언합니다.
-                var index = $(this).attr('data-index');
-				
-				// 수량 값 가져오기
-				var countNum=$('#countNum'+index);
-				var countValue=$(countNum).text();
-				countValue=Number(countValue);
-				if(countValue!==0)
-				{
+        // 카트에서 물건을 제거합니다.
+        delete cart[index];
 
-					// 소켓 이벤트를 발생시킵니다.
-					socket.emit('cart', Number(index));
-					// 아이콘 및 테마 변환
-					changeIcon(this, 'ui-icon-check', 'ui-icon-back');
-				/*}*/
-			}, function () {
-                // 변수를 선언합니다.
-                var index = $(this).attr('data-index');
-				
-				// 수량 값 가져오기
-				var countNum=$('#countNum'+index);
-				var countValue=$(countNum).text();
-				countValue=Number(countValue);
-				if(countValue!==0)
-				{
-					// 구매 의사를 물어봅니다.
-					if (confirm('물건을 구매하겠습니까?')) {
-						// 소켓 이벤트를 발생시킵니다.
-						socket.emit('buy', Number(index));
-
-						// 리스트 아이템을 제거합니다.
-						$(this).parent().remove();
-						$('#listview').listview('refresh');
-					} else {
-						// 소켓 이벤트를 발생시킵니다.
-						socket.emit('return', Number(index));
-
-						// 아이콘 및 테마 변환
-						changeIcon(this, 'ui-icon-back', 'ui-icon-check');
-					}
-				}
-				else
-				{
-
-				}
-			});
+        // count 이벤트를 발생시킵니다.
+        io.sockets.emit('count', {
+            index: index,
+            count: products[index].count
         });
-    </script>
-</head>
-<body>
-    <div data-role="page">
-        <div data-role="header">
-            <h1>Store</h1>
-        </div>
-        <div data-role="content">
-            <ul id="listview" data-role="listview" data-inset="true" data-filter="true">
-                <li data-role="list-divider">products</li>
-                <% products.forEach(function (item, index) { %>
-                <li class="product" data-index="<%= item.index %>" id="productIdx<%= item.index %>">
-                    <a href="#">
-                        <img src="graphic.png" />
-                        <h3><%= item.name %></h3>
-                        <p><%= item.price %>원</p>
-                        <span class="ui-li-count" id="countNum<%= item.index%>"><%= item.count %></span>
-                    </a>
-                    <a href="#" data-icon="check" data-index="<%= item.index %>"></a>
-                </li>
-                <% }); %>
-            </ul>
-        </div>
-    </div>
-</body>
-</html>
+    };
+
+    // 변수를 선언합니다.
+    var cart = {};
+
+    // cart 이벤트 
+    socket.on('cart', function (index) {
+        // 물건 개수를 감소시킵니다.
+        products[index].count--;
+
+        // 카트에 물건을 넣고 타이머를 시작합니다.
+        cart[index] = {};
+        cart[index].index = index;
+        cart[index].timerID = setTimeout(function () {
+            onReturn(index);
+        }, 1000 * 60 * 10);
+
+        // count 이벤트를 발생시킵니다.
+        io.sockets.emit('count', {
+            index: index,
+            count: products[index].count
+        });
+    });
+
+    // buy 이벤트
+    socket.on('buy', function (index) {
+        // 타이머를 제거합니다.
+        clearTimeout(cart[index].timerID);
+
+        // 카트에서 물건을 제거합니다.
+        delete cart[index];
+
+        // count 이벤트를 발생시킵니다.
+        io.sockets.emit('count', {
+            index: index,
+            count: products[index].count
+        });
+    });
+
+	io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+}); 
+
+
+    // return 이벤트
+    socket.on('return', function (index) {
+        onReturn(index);
+    });
+});
