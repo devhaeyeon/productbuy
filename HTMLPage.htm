@@ -31,8 +31,8 @@
             $('.product > a[data-icon]').toggle(function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				var countValue=$(this).html();
-				if(countValue!==0){
+				var countValue=$(this).text();
+				if(Number(countValue)!==0){
 					// 소켓 이벤트를 발생시킵니다.
 					socket.emit('cart', Number(index));
 					// 아이콘 및 테마 변환
@@ -41,8 +41,8 @@
 			}, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				var countValue=$(this).html();
-				if(countValue!==0){
+				var countValue=$(this).text();
+				if(Number(countValue)!==0){
 						// 구매 의사를 물어봅니다.
 						if (confirm('물건을 구매하겠습니까?')) 
 						{
