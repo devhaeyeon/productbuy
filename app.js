@@ -75,8 +75,9 @@ io.sockets.on('connection', function (socket) {
     socket.on('cart', function (index) {
         // 물건 개수를 감소시킵니다.
         products[index].count--;
-		if(products[index].count > 0)
+		if(products[index].count >= 0)
 		{
+			products[index].count--;
 			// 카트에 물건을 넣고 타이머를 시작합니다.
 			cart[index] = {};
 			cart[index].index = index;
