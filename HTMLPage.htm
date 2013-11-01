@@ -8,8 +8,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         $(document).ready(function () {
-			
-			// 함수를 선언합니다.
+            // 함수를 선언합니다.
             function changeIcon(parent, from, to) {
                 var target = $('.ui-btn-text', parent).next();
                 target.removeClass(from).addClass(to);
@@ -18,10 +17,11 @@
             function changeCount(index, count) {
                 $('li[data-index=' + index + '] .ui-li-count').html(count);
             }
+
             // 소켓을 생성합니다.
             var socket = io.connect('http://productbuy.herokuapp.com/');
-	        
-			// 소켓 이벤트를 연결합니다.
+
+            // 소켓 이벤트를 연결합니다.
             socket.on('count', function (data) {
                 // 물건 개수를 변경합니다.
                 changeCount(data.index, data.count);
@@ -31,40 +31,31 @@
             $('.product > a[data-icon]').toggle(function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				var countValue=$(this).text();
-				if(Number(countValue)!==0){
-					// 소켓 이벤트를 발생시킵니다.
-					socket.emit('cart', Number(index));
-					// 아이콘 및 테마 변환
-					changeIcon(this, 'ui-icon-check', 'ui-icon-back');
-				}
-				else
-				{
-					$(this).css('color','red');
-				}
-			}, function () {
+
+                // 소켓 이벤트를 발생시킵니다.
+                socket.emit('cart', Number(index));
+
+                // 아이콘 및 테마 변환
+                changeIcon(this, 'ui-icon-check', 'ui-icon-back');
+            }, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				//0일 경우 데이터 처리
-				var countValue=$(this).text();
-				if(Number(countValue)!==0){
-						// 구매 의사를 물어봅니다.
-						if (confirm('물건을 구매하겠습니까?')) 
-						{
-									// 소켓 이벤트를 발생시킵니다.
-									socket.emit('buy', Number(index));
-									// 리스트 아이템을 제거합니다.
-									$(this).parent().remove();
-									$('#listview').listview('refresh');
-						} 
-						else 
-						{
-									// 소켓 이벤트를 발생시킵니다.
-									socket.emit('return', Number(index));
-									// 아이콘 및 테마 변환
-									changeIcon(this, 'ui-icon-back', 'ui-icon-check');
-						}
-				}
+
+                // 구매 의사를 물어봅니다.
+                if (confirm('물건을 구매하겠습니까?')) {
+                    // 소켓 이벤트를 발생시킵니다.
+                    socket.emit('buy', Number(index));
+
+                    // 리스트 아이템을 제거합니다.
+                    $(this).parent().remove();
+                    $('#listview').listview('refresh');
+                } else {
+                    // 소켓 이벤트를 발생시킵니다.
+                    socket.emit('return', Number(index));
+
+                    // 아이콘 및 테마 변환
+                    changeIcon(this, 'ui-icon-back', 'ui-icon-check');
+                }
             });
         });
     </script>
