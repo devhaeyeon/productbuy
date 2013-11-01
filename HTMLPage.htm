@@ -12,13 +12,14 @@
 				
 				$( ".product" ).each(function( index ) {
 					// 수량이 0일 경우 스타일 적용하기
+					var productIdx=$('#productIdx'+index);
 					var countNum=$('#countNum'+index);
+					
 					var countValue=$(countNum).text();
 					countValue=Number(countValue);
 					if(countValue===0)
 					{
-						console.log(countNum);
-						countNum.css('color','red');
+						productIdx.css('color','red');
 					}
 				});
 			
@@ -94,7 +95,7 @@
             <ul id="listview" data-role="listview" data-inset="true" data-filter="true">
                 <li data-role="list-divider">products</li>
                 <% products.forEach(function (item, index) { %>
-                <li class="product" data-index="<%= item.index %>">
+                <li class="product" data-index="<%= item.index %>" id="productIdx<%= item.index %>">
                     <a href="#">
                         <img src="graphic.png" />
                         <h3><%= item.name %></h3>
