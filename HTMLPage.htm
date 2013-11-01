@@ -8,12 +8,6 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         $(document).ready(function () {
-            var countValue=$('.ui-li-count').text();
-			if(Number(countValue)===0)
-			{
-				$('.ui-li-count').css('color','red');
-			}
-			
 			
 			// 함수를 선언합니다.
             function changeIcon(parent, from, to) {
@@ -43,6 +37,10 @@
 					socket.emit('cart', Number(index));
 					// 아이콘 및 테마 변환
 					changeIcon(this, 'ui-icon-check', 'ui-icon-back');
+				}
+				else
+				{
+					$(this).css('color','red');
 				}
 			}, function () {
                 // 변수를 선언합니다.
