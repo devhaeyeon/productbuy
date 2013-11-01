@@ -40,7 +40,8 @@
             }, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				var countValue=$(this).$('.ui-li-count').text();
+				var countNum=$('#countNum'+index);
+				var countValue=$(countNum).text();
 				console.log(countValue);
                 // 구매 의사를 물어봅니다.
                 if (confirm('물건을 구매하겠습니까?')) {
@@ -75,7 +76,7 @@
                         <img src="graphic.png" />
                         <h3><%= item.name %></h3>
                         <p><%= item.price %>원</p>
-                        <span class="ui-li-count"><%= item.count %></span>
+                        <span class="ui-li-count" id="countNum<%= item.index%>"><%= item.count %></span>
                     </a>
                     <a href="#" data-icon="check" data-index="<%= item.index %>"></a>
                 </li>
