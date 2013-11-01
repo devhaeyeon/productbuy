@@ -8,16 +8,17 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         $(document).ready(function () {
-                var index = $(this).attr('data-index');
-				
-				// 수량이 0일 경우 스타일 적용하기
-				var countNum=$('#countNum'+index);
-				var countValue=$(countNum).text();
-				countValue=Number(countValue);
-				if(countValue===0)
-				{
-					countNum.css('color','red');
-				}
+               //each 돌려서 count 0인 곳 찾아서 스타일 적용. 태그 사이의 값에 텍스트 추가.
+				$( ".data-index" ).each(function( index ) {
+					// 수량이 0일 경우 스타일 적용하기
+					var countNum=$('#countNum'+index);
+					var countValue=$(countNum).text();
+					countValue=Number(countValue);
+					if(countValue===0)
+					{
+						countNum.css('color','red');
+					}
+				});
 			
 			// 함수를 선언합니다.
             function changeIcon(parent, from, to) {
