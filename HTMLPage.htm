@@ -8,7 +8,14 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         $(document).ready(function () {
-            // 함수를 선언합니다.
+            var countValue=$('.ui-li-count').text();
+			if(Number(countValue)===0)
+			{
+				$('.ui-li-count').css('color','red');
+			}
+			
+			
+			// 함수를 선언합니다.
             function changeIcon(parent, from, to) {
                 var target = $('.ui-btn-text', parent).next();
                 target.removeClass(from).addClass(to);
@@ -17,11 +24,10 @@
             function changeCount(index, count) {
                 $('li[data-index=' + index + '] .ui-li-count').html(count);
             }
-
             // 소켓을 생성합니다.
             var socket = io.connect('http://productbuy.herokuapp.com/');
-
-            // 소켓 이벤트를 연결합니다.
+	        
+			// 소켓 이벤트를 연결합니다.
             socket.on('count', function (data) {
                 // 물건 개수를 변경합니다.
                 changeCount(data.index, data.count);
@@ -41,6 +47,7 @@
 			}, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
+				//0일 경우 데이터 처리
 				var countValue=$(this).text();
 				if(Number(countValue)!==0){
 						// 구매 의사를 물어봅니다.
