@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+<style>
+.noProduct
+{
+	color:red;
+}
+</style>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
     <script src="http://code.jquery.com/jquery-1.7.1.js"></script>
@@ -20,10 +26,10 @@
 					countValue=Number(countValue);
 					if(countValue===0)
 					{
-
+						productIdx.before('<span class=noProduct>품절</span>');
 						productIdx.css('color','red');
 						costIdx.css('color','red');
-						countNum.css('color','red');
+						countNum.addClass('noProduct');
 
 					}
 				});
@@ -97,14 +103,13 @@
             <h1>Store</h1>
         </div>
         <div data-role="content">
-			<ul id="listview" data-role="listview" data-inset="true" data-filter="true">
+            <ul id="listview" data-role="listview" data-inset="true" data-filter="true">
                 <li data-role="list-divider">products</li>
                 <% products.forEach(function (item, index) { %>
                 <li class="product" data-index="<%= item.index %>" id="productIdx<%= item.index %>">
                     <a href="#">
                         <img src="graphic.png" />
-			            <span style="display:none"> 품절 </span>
-						<h3><%= item.name %></h3>
+                        <h3><%= item.name %></h3>
                         <p><%= item.price %>원</p>
                         <span class="ui-li-count" id="countNum<%= item.index%>"><%= item.count %></span>
                     </a>
