@@ -18,7 +18,7 @@ function Product(name, image, price, count) {
 var products = [
     new Product('JavaScript', 'graphic.png', 28000, 10),
     new Product('jQuery', 'graphic.png', 28000, 20),
-    new Product('Node.js', 'graphic.png', 32000, 0),
+    new Product('Node.js', 'graphic.png', 32000, 1),
     new Product('Socket.io', 'graphic.png', 17000, 15),
     new Product('Connect', 'graphic.png', 18000, 15),
     new Product('Express', 'graphic.png', 31000, 26),
