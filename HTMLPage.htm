@@ -64,17 +64,17 @@
                 var index = $(this).attr('data-index');
 				
 				// 수량 값 가져오기
-				var countNum=$('#countNum'+index);
+				/*var countNum=$('#countNum'+index);
 				var countValue=$(countNum).text();
 				countValue=Number(countValue);
 				if(countValue!==0)
-				{
+				{*/
 
 					// 소켓 이벤트를 발생시킵니다.
 					socket.emit('cart', Number(index));
 					// 아이콘 및 테마 변환
 					changeIcon(this, 'ui-icon-check', 'ui-icon-back');
-				}
+				/*}*/
 			}, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
