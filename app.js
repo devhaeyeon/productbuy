@@ -72,29 +72,33 @@ io.sockets.on('connection', function (socket) {
     var cart = {};
 
     // cart 이벤트 
-     socket.on('cart', function (index) {
-         // 물건 개수를 감소시킵니다.
-        products[index].count--;
+    socket.on('cart', function (index) {
+        // 물건 개수를 감소시킵니다.
+		products[index].count--;
 		if(products[index].count >= 0)
-		{
- 			products[index].count--;
- 			// 카트에 물건을 넣고 타이머를 시작합니다.
- 			cart[index] = {};
- 				index: index,
- 				count: products[index].count
- 			});
+		{        // 카트에 물건을 넣고 타이머를 시작합니다.
+			cart[index] = {};
+			cart[index].index = index;
+			cart[index].timerID = setTimeout(function () {
+				onReturn(index);
+			}, 1000 * 60 * 10);
+
+			// count 이벤트를 발생시킵니다.
+			io.sockets.emit('count', {
+				index: index,
+				count: products[index].count
+			});
 		}
-       else
+		else
 		{
 				products[index].count=0;
-				// count 이벤트를 발생시킵니다.
-				io.sockets.emit('count', {
-					index: index,
-					count: products[index].count
+			// count 이벤트를 발생시킵니다.
+			io.sockets.emit('count', {
+				index: index,
+				count: products[index].count
 			});
-	}
-		
 
+		}
     });
 
     // buy 이벤트
