@@ -40,22 +40,23 @@
 			}, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
+				if(Number(index)!==0){
+					// 구매 의사를 물어봅니다.
+					if (confirm('물건을 구매하겠습니까?')) 
+					{
+								// 소켓 이벤트를 발생시킵니다.
+								socket.emit('buy', Number(index));
 
-                // 구매 의사를 물어봅니다.
-                if (confirm('물건을 구매하겠습니까?')) {
-                    // 소켓 이벤트를 발생시킵니다.
-                    socket.emit('buy', Number(index));
-
-                    // 리스트 아이템을 제거합니다.
-                    $(this).parent().remove();
-                    $('#listview').listview('refresh');
-                } else {
-                    // 소켓 이벤트를 발생시킵니다.
-                    socket.emit('return', Number(index));
-
-                    // 아이콘 및 테마 변환
-                    changeIcon(this, 'ui-icon-back', 'ui-icon-check');
-                }
+								// 리스트 아이템을 제거합니다.
+								$(this).parent().remove();
+								$('#listview').listview('refresh');
+							} else {
+								// 소켓 이벤트를 발생시킵니다.
+								socket.emit('return', Number(index));
+								// 아이콘 및 테마 변환
+								changeIcon(this, 'ui-icon-back', 'ui-icon-check');
+							}
+					}
             });
         });
     </script>
