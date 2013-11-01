@@ -20,7 +20,7 @@
 					countValue=Number(countValue);
 					if(countValue===0)
 					{
-						productIdx.before('품절');
+
 						productIdx.css('color','red');
 						costIdx.css('color','red');
 						countNum.css('color','red');
@@ -97,13 +97,14 @@
             <h1>Store</h1>
         </div>
         <div data-role="content">
-            <ul id="listview" data-role="listview" data-inset="true" data-filter="true">
+			<ul id="listview" data-role="listview" data-inset="true" data-filter="true">
                 <li data-role="list-divider">products</li>
                 <% products.forEach(function (item, index) { %>
                 <li class="product" data-index="<%= item.index %>" id="productIdx<%= item.index %>">
                     <a href="#">
                         <img src="graphic.png" />
-                        <h3><%= item.name %></h3>
+			            <span style="display:none"> 품절 </span>
+						<h3><%= item.name %></h3>
                         <p><%= item.price %>원</p>
                         <span class="ui-li-count" id="countNum<%= item.index%>"><%= item.count %></span>
                     </a>
