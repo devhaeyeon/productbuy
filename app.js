@@ -92,12 +92,6 @@ io.sockets.on('connection', function (socket) {
 		else
 		{
 				products[index].count=0;
-			// count 이벤트를 발생시킵니다.
-			io.sockets.emit('count', {
-				index: index,
-				count: products[index].count
-			});
-
 		}
     });
 
