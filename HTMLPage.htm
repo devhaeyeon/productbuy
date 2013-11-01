@@ -6,6 +6,7 @@
 {
 	color:red;
 }
+
 </style>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
@@ -29,7 +30,11 @@
 						productIdx.before('<span class=noProduct>품절</span>');
 						productIdx.css('color','red');
 						costIdx.css('color','red');
-						countNum.addClass('noProduct');
+						countNum.css('color','red');
+
+						productIdx.css('text-decoration','line-through');
+						costIdx.css('text-decoration','line-through');
+						countNum.css('text-decoration','line-through');
 
 					}
 				});
