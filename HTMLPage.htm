@@ -40,7 +40,7 @@
             }, function () {
                 // 변수를 선언합니다.
                 var index = $(this).attr('data-index');
-				var countValue=$('.ui-li-count').text();
+				var countValue=$(this).$('.ui-li-count').text();
 				console.log(countValue);
                 // 구매 의사를 물어봅니다.
                 if (confirm('물건을 구매하겠습니까?')) {
