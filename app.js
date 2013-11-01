@@ -16,8 +16,8 @@ function Product(name, image, price, count) {
 
 // 변수를 선언합니다.
 var products = [
-    new Product('JavaScript', 'graphic.png', 28000, 10),
-    new Product('jQuery', 'graphic.png', 28000, 20),
+    new Product('JavaScript', 'graphic.png', 28000, 1),
+    new Product('jQuery', 'graphic.png', 28000, 0),
     new Product('Node.js', 'graphic.png', 32000, 10),
     new Product('Socket.io', 'graphic.png', 17000, 15),
     new Product('Connect', 'graphic.png', 18000, 15),
